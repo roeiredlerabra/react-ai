@@ -4,7 +4,7 @@ const Lineup = () => {
   // Mock data for festival artists
   const headliners = [
     { id: 1, name: 'Electric Pulse', genre: 'Electronic', image: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' },
-    { id: 2, name: 'The Resonance', genre: 'Alternative Rock', image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819=rb-1.2.1&auto=format&fit=crop&w=800&q=80' },
+    { id: 2, name: 'The Resonance', genre: 'Alternative Rock', image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819' },
     { id: 3, name: 'Sonic Wave', genre: 'Pop/Rock', image: 'https://images.unsplash.com/photo-1598387993281-cecf8b71a8f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' },
   ];
 
