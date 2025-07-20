@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page Not Found | ECHOFEST</title>
     <script>
-        // Redirect to the homepage
-        const path = window.location.pathname;
-        const repoName = '/react-ai/'; // Updated to match your actual repository name
+        // SPA GitHub Pages router
+        const pathSegmentsToKeep = 1; // Keep /react-ai/ in the path
         
-        // Redirect to the root of the GitHub Pages site
-        window.location.href = window.location.origin + repoName;
+        let l = window.location;
+        l.replace(
+            l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+            l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+            l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+            (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+            l.hash
+        );
     </script>
     <style>
         body {
