@@ -45,8 +45,8 @@ const FAQ = () => {
   };
 
   return (
-    <section id="faq" className="py-20 bg-gray-900 text-white">
-      <div className="container mx-auto px-4">
+    <section id="faq" className="py-20 bg-gray-50">
+      <div className="container mx-auto px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -54,8 +54,10 @@ const FAQ = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">Frequently Asked Questions</h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4 text-gray-800">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-lg md:text-xl max-w-2xl mx-auto text-gray-700">
             Everything you need to know about the festival
           </p>
         </motion.div>
@@ -68,32 +70,43 @@ const FAQ = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="mb-4"
+              className="mb-6"
             >
               <div
-                className={`border rounded-lg overflow-hidden ${
-                  activeIndex === index ? 'border-primary' : 'border-gray-700'
-                } bg-gray-800 bg-opacity-50`}
+                className={`border rounded-lg overflow-hidden shadow-sm ${
+                  activeIndex === index ? 'border-primary shadow-md' : 'border-gray-200'
+                } bg-white transition-all duration-200`}
               >
                 <button
-                  className={`w-full flex justify-between items-center p-5 text-left focus:outline-none ${
-                    activeIndex === index ? 'bg-gray-800' : ''
-                  }`}
+                  className={`w-full flex justify-between items-center p-5 text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 ${
+                    activeIndex === index ? 'bg-gray-50/70' : ''
+                  } hover:bg-gray-50`}
                   onClick={() => toggleAccordion(index)}
+                  aria-expanded={activeIndex === index}
+                  aria-controls={`faq-answer-${index}`}
+                  id={`faq-question-${index}`}
                 >
-                  <h3 className="text-lg font-medium text-white">{faq.question}</h3>
+                  <h3 className={`text-lg font-semibold ${
+                    activeIndex === index ? 'text-primary' : 'text-gray-800'
+                  }`}>
+                    {faq.question}
+                  </h3>
                   <ChevronDownIcon
-                    className={`w-5 h-5 text-gray-400 transition-transform ${
-                      activeIndex === index ? 'transform rotate-180 text-primary' : ''
+                    className={`w-5 h-5 transition-transform ${
+                      activeIndex === index ? 'transform rotate-180 text-primary' : 'text-gray-500'
                     }`}
+                    aria-hidden="true"
                   />
                 </button>
                 <div
-                  className={`overflow-hidden transition-all duration-300 ${
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
                     activeIndex === index ? 'max-h-96' : 'max-h-0'
                   }`}
+                  id={`faq-answer-${index}`}
+                  role="region"
+                  aria-labelledby={`faq-question-${index}`}
                 >
-                  <div className="p-5 border-t border-gray-700 text-gray-300">
+                  <div className="p-5 border-t border-gray-200 text-gray-700 leading-relaxed">
                     {faq.answer}
                   </div>
                 </div>
@@ -109,12 +122,13 @@ const FAQ = () => {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <p className="text-gray-300 mb-4">
+          <p className="mb-6 text-gray-600">
             Didn't find what you're looking for?
           </p>
           <a
             href="#"
-            className="inline-block bg-gradient-to-r from-primary to-secondary text-white font-medium py-3 px-8 rounded-full text-lg hover:opacity-90 transition-opacity"
+            className="inline-block bg-gradient-to-r from-primary to-secondary text-white font-medium py-3 px-8 rounded-full text-base md:text-lg hover:opacity-90 transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+            aria-label="Contact Support for More Information"
           >
             Contact Support
           </a>
