@@ -4,7 +4,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-dark to-gray-900 text-white overflow-hidden"
+      className="py-20 bg-gray-900 text-white"
     >
       {/* Background particles effect */}
       <div className="absolute inset-0 overflow-hidden">
