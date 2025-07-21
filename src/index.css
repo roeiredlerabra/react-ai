@@ -10,7 +10,7 @@
   }
   
   body {
-    @apply font-sans text-dark bg-light min-h-screen;
+    @apply font-sans text-gray-900 bg-gray-100 min-h-screen;
   }
 }
 

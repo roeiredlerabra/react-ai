@@ -39,7 +39,7 @@ const Lineup = () => {
   };
 
   return (
-    <section id="lineup" className="py-20 bg-light">
+    <section id="lineup" className="py-20 bg-gray-100">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <motion.h2 
@@ -47,7 +47,7 @@ const Lineup = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold font-heading text-dark mb-4"
+            className="text-3xl md:text-4xl font-bold font-heading text-gray-900 mb-4"
           >
             Lineup
           </motion.h2>
@@ -105,7 +105,7 @@ const Lineup = () => {
               variants={item}
               className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
             >
-              <h4 className="text-lg font-semibold text-dark mb-1">{artist.name}</h4>
+              <h4 className="text-lg font-semibold text-gray-900 mb-1">{artist.name}</h4>
               <p className="text-gray-500 text-sm">{artist.genre}</p>
             </motion.div>
           ))}

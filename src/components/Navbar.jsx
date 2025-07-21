@@ -32,7 +32,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-dark bg-opacity-90 py-3 shadow-lg' : 'bg-transparent py-5'}`}>
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-gray-900 bg-opacity-90 py-3 shadow-lg' : 'bg-transparent py-5'}`}>
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="home" smooth={true} duration={500}>
           <h1 className="text-2xl font-heading font-bold text-white cursor-pointer">
@@ -82,7 +82,7 @@ const Navbar = () => {
         <div
           className={`${
             nav ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'
-          } md:hidden absolute top-0 left-0 w-full h-screen bg-dark flex flex-col justify-center items-center transition-all duration-300 origin-top`}
+          } md:hidden absolute top-0 left-0 w-full h-screen bg-gray-900 flex flex-col justify-center items-center transition-all duration-300 origin-top`}
         >
           <ul className="flex flex-col items-center space-y-8 mb-10">
             {navLinks.map(({ id, title }) => (

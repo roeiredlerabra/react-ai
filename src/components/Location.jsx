@@ -3,7 +3,7 @@ import { MapPinIcon, BoltIcon, TruckIcon, ShieldCheckIcon } from '@heroicons/rea
 
 const Location = () => {
   return (
-    <section id="location" className="py-20 bg-dark text-white">
+    <section id="location" className="py-20 bg-gray-900 text-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: -20 }}

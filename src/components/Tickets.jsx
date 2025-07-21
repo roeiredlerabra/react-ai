@@ -55,7 +55,7 @@ const Tickets = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold font-heading text-dark mb-4">Get Your Tickets</h2>
+          <h2 className="text-3xl md:text-4xl font-bold font-heading text-gray-900 mb-4">Get Your Tickets</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Choose the perfect ticket package for your festival experience
           </p>
@@ -98,7 +98,7 @@ const Tickets = () => {
                   className={`w-full py-3 px-4 rounded-full font-medium transition-colors ${
                     ticket.popular
                       ? 'bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90'
-                      : 'bg-gray-100 text-dark hover:bg-gray-200'
+                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                   }`}
                 >
                   Buy Now
