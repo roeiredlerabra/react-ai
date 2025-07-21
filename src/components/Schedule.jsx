@@ -1,23 +1,33 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CalendarDaysIcon, ClockIcon, MusicalNoteIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { CalendarDaysIcon, ClockIcon, MusicalNoteIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
 const Schedule = () => {
-  // State for my schedule
   const [mySchedule, setMySchedule] = useState([]);
+  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
   
   // Load saved schedule from localStorage on component mount
   useEffect(() => {
-    const savedSchedule = localStorage.getItem('myFestivalSchedule');
+    const savedSchedule = localStorage.getItem('myEchofestSchedule');
     if (savedSchedule) {
       setMySchedule(JSON.parse(savedSchedule));
     }
   }, []);
-
+  
   // Save schedule to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('myFestivalSchedule', JSON.stringify(mySchedule));
+    localStorage.setItem('myEchofestSchedule', JSON.stringify(mySchedule));
   }, [mySchedule]);
+  
+  // Handle notifications
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    
+    // Hide notification after 3 seconds
+    setTimeout(() => {
+      setNotification({ show: false, message: '', type: '' });
+    }, 3000);
+  };
 
   // Mock data for schedule
   const days = [
@@ -93,49 +103,24 @@ const Schedule = () => {
   ];
 
   const [activeTab, setActiveTab] = useState(0);
-  const [showMySchedule, setShowMySchedule] = useState(false);
-
-  // Function to generate and download the schedule as a CSV file
-  const downloadSchedule = () => {
-    // Create CSV content
-    let csvContent = "Day,Time,Stage,Artist\n";
-    
-    // If showing my schedule, only include selected performances
-    if (showMySchedule && mySchedule.length > 0) {
-      mySchedule.forEach(item => {
-        csvContent += `"${item.day}","${item.time}","${item.stage}","${item.artist}"\n`;
-      });
-    } else {
-      // Include all performances from all days
-      days.forEach(day => {
-        day.stages.forEach(stage => {
-          stage.performances.forEach(performance => {
-            csvContent += `"${day.date}","${performance.time}","${stage.name}","${performance.artist}"\n`;
-          });
-        });
-      });
-    }
-    
-    // Create a blob and download link
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    
-    // Set up download
-    const filename = showMySchedule ? 'my-echofest-schedule.csv' : 'echofest-full-schedule.csv';
-    link.setAttribute('href', url);
-    link.setAttribute('download', filename);
-    link.style.visibility = 'hidden';
-    
-    // Trigger download
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   return (
     <section id="schedule" className="py-20 bg-dark text-white">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative">
+        {/* Notification */}
+        {notification.show && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className={`absolute top-0 left-1/2 transform -translate-x-1/2 z-50 py-3 px-6 rounded-lg shadow-lg ${
+              notification.type === 'add' ? 'bg-green-500' : 'bg-red-500'
+            }`}
+          >
+            <p className="text-white text-center">{notification.message}</p>
+          </motion.div>
+        )}
+        
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -198,42 +183,28 @@ const Schedule = () => {
                       <h4 className="text-lg font-medium text-white">{performance.artist}</h4>
                     </div>
                     <div>
-                      {mySchedule.some(item => 
-                        item.day === days[activeTab].date && 
-                        item.stage === stage.name && 
-                        item.artist === performance.artist && 
-                        item.time === performance.time
-                      ) ? (
-                        <button 
-                          className="text-sm text-green-500 hover:text-green-400 flex items-center"
-                          onClick={() => {
-                            const newSchedule = mySchedule.filter(item => 
-                              !(item.day === days[activeTab].date && 
-                                item.stage === stage.name && 
-                                item.artist === performance.artist && 
-                                item.time === performance.time)
-                            );
-                            setMySchedule(newSchedule);
-                          }}
-                        >
-                          <CheckIcon className="w-4 h-4 mr-1" />
-                          Added to Schedule
-                        </button>
-                      ) : (
-                        <button 
-                          className="text-sm text-primary hover:underline"
-                          onClick={() => {
-                            setMySchedule([...mySchedule, {
-                              day: days[activeTab].date,
-                              stage: stage.name,
-                              artist: performance.artist,
-                              time: performance.time
-                            }]);
-                          }}
-                        >
-                          Add to My Schedule
-                        </button>
-                      )}
+                      <button 
+                        onClick={() => {
+                          const performanceId = `${days[activeTab].date}-${stage.name}-${performance.time}-${performance.artist}`;
+                          if (mySchedule.includes(performanceId)) {
+                            setMySchedule(mySchedule.filter(id => id !== performanceId));
+                            showNotification(`Removed ${performance.artist} from your schedule`, 'remove');
+                          } else {
+                            setMySchedule([...mySchedule, performanceId]);
+                            showNotification(`Added ${performance.artist} to your schedule`, 'add');
+                          }
+                        }}
+                        className="text-sm hover:underline flex items-center"
+                      >
+                        {mySchedule.includes(`${days[activeTab].date}-${stage.name}-${performance.time}-${performance.artist}`) ? (
+                          <>
+                            <CheckCircleIcon className="w-4 h-4 mr-1 text-green-400" />
+                            <span className="text-green-400">Added to My Schedule</span>
+                          </>
+                        ) : (
+                          <span className="text-primary">Add to My Schedule</span>
+                        )}
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -249,48 +220,175 @@ const Schedule = () => {
           viewport={{ once: true }}
           className="text-center mt-10"
         >
-          {mySchedule.length > 0 && (
-            <div className="mb-6">
-              <button
-                onClick={() => setShowMySchedule(!showMySchedule)}
-                className={`px-6 py-3 rounded-full mx-2 mb-4 font-medium transition-colors ${
-                  showMySchedule
-                    ? 'bg-primary text-white'
-                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                }`}
-              >
-                {showMySchedule ? 'Showing My Schedule' : 'Show My Schedule'}
-              </button>
-              
-              {showMySchedule && (
-                <div className="max-w-2xl mx-auto bg-gray-800 rounded-xl p-6 mt-4">
-                  <h3 className="text-xl font-bold mb-4">My Schedule</h3>
-                  {mySchedule.length > 0 ? (
-                    <div>
-                      {mySchedule.map((item, idx) => (
-                        <div key={idx} className="mb-3 pb-3 border-b border-gray-700 last:border-0">
-                          <div className="font-medium">{item.artist}</div>
-                          <div className="text-sm text-gray-400">
-                            {item.day} • {item.time} • {item.stage}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p>No performances added to your schedule yet.</p>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-          
           <button
-            onClick={downloadSchedule}
+            onClick={() => {
+              // Create a text representation of the schedule
+              let scheduleText = "ECHOFEST 2025 - FESTIVAL SCHEDULE\n\n";
+              
+              days.forEach(day => {
+                scheduleText += `=== ${day.date} ===\n\n`;
+                
+                day.stages.forEach(stage => {
+                  scheduleText += `${stage.name}\n`;
+                  scheduleText += "--------------------\n";
+                  
+                  stage.performances.forEach(performance => {
+                    scheduleText += `${performance.time} - ${performance.artist}\n`;
+                  });
+                  
+                  scheduleText += "\n";
+                });
+                
+                scheduleText += "\n";
+              });
+              
+              // Create a blob and download link
+              const blob = new Blob([scheduleText], { type: 'text/plain' });
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'ECHOFEST_2025_Schedule.txt';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              
+              // Show notification
+              showNotification('Full schedule downloaded successfully', 'add');
+            }}
             className="inline-block bg-transparent border-2 border-primary hover:bg-primary text-white font-medium py-3 px-8 rounded-full text-lg transition-colors"
           >
-            Download {showMySchedule ? 'My' : 'Full'} Schedule
+            Download Full Schedule
           </button>
         </motion.div>
+        
+        {/* My Schedule Modal */}
+        {mySchedule.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gray-800 rounded-xl p-6 mt-10 max-w-2xl mx-auto"
+          >
+            <h3 className="text-xl font-bold mb-4 flex items-center">
+              <CalendarDaysIcon className="w-5 h-5 mr-2 text-secondary" />
+              My Personal Schedule
+            </h3>
+            
+            <div className="space-y-4">
+              {days.map((day) => {
+                // Check if there are any performances from this day in mySchedule
+                const dayHasScheduled = day.stages.some(stage => 
+                  stage.performances.some(performance => 
+                    mySchedule.includes(`${day.date}-${stage.name}-${performance.time}-${performance.artist}`)
+                  )
+                );
+                
+                if (!dayHasScheduled) return null;
+                
+                return (
+                  <div key={day.date} className="border-b border-gray-700 pb-4">
+                    <h4 className="font-medium mb-2">{day.date}</h4>
+                    {day.stages.map(stage => {
+                      const scheduledPerformances = stage.performances.filter(performance => 
+                        mySchedule.includes(`${day.date}-${stage.name}-${performance.time}-${performance.artist}`)
+                      );
+                      
+                      if (scheduledPerformances.length === 0) return null;
+                      
+                      return (
+                        <div key={stage.name} className="ml-4 mb-3">
+                          <p className="text-gray-400 text-sm">{stage.name}</p>
+                          {scheduledPerformances.map((performance, idx) => (
+                            <div key={idx} className="ml-2 flex items-center text-sm py-1">
+                              <span className="text-gray-500 w-16">{performance.time}</span>
+                              <span className="text-white">{performance.artist}</span>
+                              <button 
+                                className="ml-auto text-red-400 text-xs hover:underline"
+                                onClick={() => {
+                                  const performanceId = `${day.date}-${stage.name}-${performance.time}-${performance.artist}`;
+                                  setMySchedule(mySchedule.filter(id => id !== performanceId));
+                                }}
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div className="mt-4 flex justify-between">
+              <button 
+                onClick={() => {
+                  setMySchedule([]);
+                  showNotification('Your schedule has been cleared', 'remove');
+                }}
+                className="text-sm text-red-400 hover:underline"
+              >
+                Clear My Schedule
+              </button>
+              <button
+                onClick={() => {
+                  // Create a text representation of my personal schedule
+                  let myScheduleText = "MY ECHOFEST 2025 SCHEDULE\n\n";
+                  
+                  days.forEach(day => {
+                    // Check if there are any performances from this day in mySchedule
+                    const dayHasScheduled = day.stages.some(stage => 
+                      stage.performances.some(performance => 
+                        mySchedule.includes(`${day.date}-${stage.name}-${performance.time}-${performance.artist}`)
+                      )
+                    );
+                    
+                    if (!dayHasScheduled) return;
+                    
+                    myScheduleText += `=== ${day.date} ===\n\n`;
+                    
+                    day.stages.forEach(stage => {
+                      const scheduledPerformances = stage.performances.filter(performance => 
+                        mySchedule.includes(`${day.date}-${stage.name}-${performance.time}-${performance.artist}`)
+                      );
+                      
+                      if (scheduledPerformances.length === 0) return;
+                      
+                      myScheduleText += `${stage.name}\n`;
+                      myScheduleText += "--------------------\n";
+                      
+                      scheduledPerformances.forEach(performance => {
+                        myScheduleText += `${performance.time} - ${performance.artist}\n`;
+                      });
+                      
+                      myScheduleText += "\n";
+                    });
+                    
+                    myScheduleText += "\n";
+                  });
+                  
+                  // Create a blob and download link
+                  const blob = new Blob([myScheduleText], { type: 'text/plain' });
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.download = 'My_ECHOFEST_2025_Schedule.txt';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  URL.revokeObjectURL(url);
+                  
+                  // Show notification
+                  showNotification('Your personal schedule downloaded successfully', 'add');
+                }}
+                className="text-sm text-primary hover:underline"
+              >
+                Download My Schedule
+              </button>
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   );
