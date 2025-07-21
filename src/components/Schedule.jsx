@@ -105,7 +105,7 @@ const Schedule = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <section id="schedule" className="py-20 bg-dark text-white">
+    <section id="schedule" className="py-20 bg-gray-900 text-white">
       <div className="container mx-auto px-4 relative">
         {/* Notification */}
         {notification.show && (
@@ -171,18 +171,18 @@ const Schedule = () => {
                 {stage.performances.map((performance, idx) => (
                   <div
                     key={idx}
-                    className={`flex items-center p-4 ${
+                    className={`flex flex-col sm:flex-row items-start sm:items-center p-4 ${
                       idx !== stage.performances.length - 1 ? 'border-b border-gray-700' : ''
                     }`}
                   >
-                    <div className="flex items-center text-gray-400 w-24">
+                    <div className="flex items-center text-gray-400 w-24 mb-2 sm:mb-0">
                       <ClockIcon className="w-4 h-4 mr-2" />
                       <span>{performance.time}</span>
                     </div>
-                    <div className="flex-1 ml-4">
+                    <div className="flex-1 ml-0 sm:ml-4 mb-3 sm:mb-0">
                       <h4 className="text-lg font-medium text-white">{performance.artist}</h4>
                     </div>
-                    <div>
+                    <div className="ml-0 sm:ml-4 mt-2 sm:mt-0">
                       <button 
                         onClick={() => {
                           const performanceId = `${days[activeTab].date}-${stage.name}-${performance.time}-${performance.artist}`;
@@ -194,15 +194,15 @@ const Schedule = () => {
                             showNotification(`Added ${performance.artist} to your schedule`, 'add');
                           }
                         }}
-                        className="text-sm hover:underline flex items-center"
+                        className="text-sm hover:underline flex items-center px-3 py-1 border border-primary rounded-full"
                       >
                         {mySchedule.includes(`${days[activeTab].date}-${stage.name}-${performance.time}-${performance.artist}`) ? (
                           <>
                             <CheckCircleIcon className="w-4 h-4 mr-1 text-green-400" />
-                            <span className="text-green-400">Added to My Schedule</span>
+                            <span className="text-green-400">Added to Schedule</span>
                           </>
                         ) : (
-                          <span className="text-primary">Add to My Schedule</span>
+                          <span className="text-primary">Add to Schedule</span>
                         )}
                       </button>
                     </div>

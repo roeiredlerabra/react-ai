@@ -45,7 +45,7 @@ const FAQ = () => {
   };
 
   return (
-    <section id="faq" className="py-20 bg-white">
+    <section id="faq" className="py-20 bg-gray-900 text-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -54,8 +54,8 @@ const FAQ = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold font-heading text-dark mb-4">Frequently Asked Questions</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">Frequently Asked Questions</h2>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             Everything you need to know about the festival
           </p>
         </motion.div>
@@ -72,19 +72,19 @@ const FAQ = () => {
             >
               <div
                 className={`border rounded-lg overflow-hidden ${
-                  activeIndex === index ? 'border-primary' : 'border-gray-200'
-                }`}
+                  activeIndex === index ? 'border-primary' : 'border-gray-700'
+                } bg-gray-800 bg-opacity-50`}
               >
                 <button
                   className={`w-full flex justify-between items-center p-5 text-left focus:outline-none ${
-                    activeIndex === index ? 'bg-gray-50' : ''
+                    activeIndex === index ? 'bg-gray-800' : ''
                   }`}
                   onClick={() => toggleAccordion(index)}
                 >
-                  <h3 className="text-lg font-medium text-dark">{faq.question}</h3>
+                  <h3 className="text-lg font-medium text-white">{faq.question}</h3>
                   <ChevronDownIcon
-                    className={`w-5 h-5 text-gray-500 transition-transform ${
-                      activeIndex === index ? 'transform rotate-180' : ''
+                    className={`w-5 h-5 text-gray-400 transition-transform ${
+                      activeIndex === index ? 'transform rotate-180 text-primary' : ''
                     }`}
                   />
                 </button>
@@ -93,7 +93,7 @@ const FAQ = () => {
                     activeIndex === index ? 'max-h-96' : 'max-h-0'
                   }`}
                 >
-                  <div className="p-5 border-t border-gray-200 text-gray-700">
+                  <div className="p-5 border-t border-gray-700 text-gray-300">
                     {faq.answer}
                   </div>
                 </div>
@@ -109,7 +109,7 @@ const FAQ = () => {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-300 mb-4">
             Didn't find what you're looking for?
           </p>
           <a
