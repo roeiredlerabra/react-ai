@@ -1,4 +1,43 @@
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+
+const AnimatedStat = ({ value, label, suffix = '', delay = 0 }) => {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    const startCount = () => {
+      let start = 0;
+      const step = Math.ceil(value / 50); // Divide animation into 50 steps
+      const timer = setInterval(() => {
+        start += step;
+        if (start > value) {
+          setCount(value);
+          clearInterval(timer);
+        } else {
+          setCount(start);
+        }
+      }, 30); // Update every 30ms
+      
+      return () => clearInterval(timer);
+    };
+    
+    // Start the animation after the delay
+    const timeout = setTimeout(() => {
+      startCount();
+    }, delay * 1000);
+    
+    return () => clearTimeout(timeout);
+  }, [value, delay]);
+  
+  return (
+    <div className="text-center">
+      <div className="text-4xl md:text-5xl font-bold">
+        {count.toLocaleString()}{suffix}
+      </div>
+      <div className="text-gray-400">{label}</div>
+    </div>
+  );
+};
 
 const Hero = () => {
   return (
@@ -73,23 +112,11 @@ const Hero = () => {
           transition={{ delay: 0.6, duration: 0.8 }}
           className="mt-16"
         >
-          <div className="flex flex-wrap justify-center items-center gap-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold">3</div>
-              <div className="text-gray-400">Days</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold">50+</div>
-              <div className="text-gray-400">Artists</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold">4</div>
-              <div className="text-gray-400">Stages</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold">25K+</div>
-              <div className="text-gray-400">Attendees</div>
-            </div>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+            <AnimatedStat value={3} label="Days" delay={0.7} />
+            <AnimatedStat value={48} label="Artists" suffix="+" delay={0.9} />
+            <AnimatedStat value={6} label="Stages" delay={1.1} />
+            <AnimatedStat value={25000} label="Attendees" suffix="+" delay={1.3} />
           </div>
         </motion.div>
       </div>
